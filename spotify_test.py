@@ -4,12 +4,16 @@ import random
 import string
 import requests
 from flask import Flask, request, redirect, jsonify, session
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-client_id = '89251c51d2d14ee4bb2575ffe6addb49'  # Seu ID de cliente Spotify
-client_secret = '98b0de3612d84aeea3384c0640add886'  # Seu segredo Spotify
+client_id = os.getenv("CLIENT_ID") # Seu ID de cliente Spotify
+client_secret = os.getenv("CLIENT_SECRET")  # Seu segredo Spotify
 redirect_uri = "http://localhost:8181" # Sua URI de redirecionamento Spotify
 
 def generate_random_string(length):
@@ -36,6 +40,7 @@ def callback():
     # após verificar o parâmetro de estado
 
     code = request.args.get('code')
+    print(code)
     state = request.args.get('state')
     stored_state = session.get('state')
 
@@ -103,4 +108,4 @@ def refresh_token():
         return jsonify({'access_token': access_token})
 
 if __name__ == '__main__':
-    app.run(port=8888)
+    app.run(port=8181)
